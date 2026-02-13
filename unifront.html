@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学字体样式转换器 · 数字转换已修复</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+    body {
+      background: #f5f7fc;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .converter {
+      max-width: 1300px;
+      width: 100%;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 20px 40px rgba(0, 10, 30, 0.08);
+      padding: 2rem 2rem 2.2rem;
+    }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 0.25rem;
+      color: #0a1e3c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+    h1 span {
+      background: #eef2ff;
+      padding: 0.1rem 1rem;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: #1e3a8a;
+    }
+    .sub {
+      color: #4a5b7a;
+      margin-bottom: 1.8rem;
+      margin-top: 0.2rem;
+      font-size: 1rem;
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      background: #f9fbff;
+      border-radius: 0 12px 12px 0;
+      line-height: 1.5;
+    }
+    .io-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 2.2rem;
+    }
+    .input-area, .output-area {
+      background: #f9fcff;
+      border-radius: 20px;
+      padding: 1.5rem 1.8rem;
+      border: 1px solid #e2edff;
+    }
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.6rem;
+      color: #1f3a6b;
+      font-weight: 550;
+    }
+    .label-row label {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .char-count {
+      font-size: 0.85rem;
+      background: #e4edfb;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      color: #0f2b50;
+      min-width: 80px;
+      text-align: center;
+      display: inline-block;
+    }
+    textarea {
+      width: 100%;
+      border: none;
+      background: transparent;
+      resize: vertical;
+      font-size: 1.5rem;
+      line-height: 1.6;
+      padding: 0.3rem 0;
+      border-bottom: 2px solid #cdddec;
+      font-family: 'Courier New', Courier, 'JetBrains Mono', monospace;
+      color: #0a1e3c;
+    }
+    textarea:focus {
+      outline: none;
+      border-bottom-color: #2563eb;
+    }
+    .output-text {
+      background: white;
+      border-radius: 14px;
+      padding: 1rem 1.4rem;
+      font-size: 1.65rem;
+      line-height: 1.6;
+      word-break: break-word;
+      min-height: 6rem;
+      border: 1px solid #e0ebf9;
+      background: #ffffff;
+      font-family: 'Segoe UI', 'Roboto', 'Noto Sans Math', 'Arial', sans-serif;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+      color: #0b2a4e;
+    }
+    .button-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .copy-btn {
+      background: white;
+      border: 1px solid #bbcfe0;
+      padding: 0.5rem 1.4rem;
+      border-radius: 50px;
+      font-weight: 500;
+      color: #1f3a6b;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .copy-btn:hover {
+      background: #eef4ff;
+      border-color: #3f83f8;
+    }
+    .style-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+      background: #f2f8ff;
+      padding: 1.5rem 1.5rem;
+      border-radius: 24px;
+      margin-top: 0.5rem;
+    }
+    .style-btn {
+      background: white;
+      border: none;
+      border-radius: 40px;
+      padding: 0.6rem 1rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      font-weight: 450;
+      color: #1e2f4a;
+      cursor: pointer;
+    }
+    .style-btn:hover {
+      background: #e6f0ff;
+      border-color: #3b82f6;
+    }
+    .style-btn.active {
+      background: #1e3f78;
+      color: white;
+      border-color: #0f2e5a;
+    }
+    .style-sample {
+      font-size: 1.3rem;
+      margin-left: 4px;
+      font-weight: 400;
+    }
+    .footer-note {
+      margin-top: 1.8rem;
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: center;
+      border-top: 1px solid #dce5f0;
+      padding-top: 1.5rem;
+    }
+    .missing-warning {
+      background: #fff9e6;
+      border-radius: 12px;
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      color: #5e4b1a;
+    }
+    .digit-badge {
+      background: #dbeafe;
+      border-radius: 16px;
+      padding: 0.1rem 0.6rem;
+      font-size: 0.7rem;
+      margin-left: 6px;
+      color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+<div class="converter">
+  <h1>
+    ⚡ 数学字母数字符号转换器
+    <span>v1.02 · 数字转换完全修复</span>
+  </h1>
+  <div class="sub">
+    ⚡ 输入任意拉丁字母/数字，实时转换为数学专用风格。✅ <strong style="color:#0e4f8b;">所有带数字映射的样式：粗体、双线体、无衬线、无衬线粗体、等宽、双线数字专用</strong> 均正确转换0-9
+  </div>
+  
+  <!-- 输入输出主面板 -->
+  <div class="io-panel">
+    <div class="input-area">
+      <div class="label-row">
+        <label>📝 标准输入</label>
+        <span class="char-count" id="inputCount">0 字符</span>
+      </div>
+      <textarea id="inputText" placeholder="输入英文和数字，如: Hello 123, Room 404" rows="2"></textarea>
+      <div class="button-bar">
+        <button class="copy-btn" id="clearInputBtn">🧹 清空</button>
+        <span style="color:#6c86a0; font-size:0.9rem;">↵ 转换 A–Z a–z 0–9，数字支持9种风格</span>
+      </div>
+    </div>
+    
+    <div class="output-area">
+      <div class="label-row">
+        <label>✨ 样式输出 — <span id="currentStyleName">粗体</span></label>
+        <span class="char-count" id="outputCount">0 字符</span>
+      </div>
+      <div id="outputDisplay" class="output-text"></div>
+      <div class="button-bar">
+        <button class="copy-btn" id="copyOutputBtn">📋 复制输出</button>
+        <span id="copyFeedback" style="color:#3b82f6; font-size:0.9rem;"></span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 所有数学样式风格 —— 数字映射均已正确关联 -->
+  <div style="font-weight: 600; margin-bottom: 12px; margin-top: 10px; color: #1e3f6e;">🧬 选择数学字体样式 —— 点击即时转换</div>
+  <div class="style-grid" id="styleGrid">
+    <!-- 粗体：有数字映射 -->
+    <button class="style-btn active" data-style="bold">𝗕 粗体 <span class="style-sample">𝐀𝟏𝟐</span><span class="digit-badge">数字✓</span></button>
+    <!-- 斜体：无数字映射（保留原数字） -->
+    <button class="style-btn" data-style="italic">𝐼 斜体 <span class="style-sample">𝐴12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 粗斜体：无数字映射 -->
+    <button class="style-btn" data-style="bolditalic">𝗕𝗜 粗斜体 <span class="style-sample">𝑨12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 手写体：无数字映射 -->
+    <button class="style-btn" data-style="script">𝒮 手写体 <span class="style-sample">𝒜12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 手写粗体：无数字映射 -->
+    <button class="style-btn" data-style="boldscript">𝓢 手写粗体 <span class="style-sample">𝓐12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 哥特体：无数字映射 -->
+    <button class="style-btn" data-style="fraktur">𝔉 哥特体 <span class="style-sample">𝔄12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 哥特粗体：无数字映射 -->
+    <button class="style-btn" data-style="boldfraktur">𝕱 哥特粗体 <span class="style-sample">𝕬12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 双线体：有数字映射！修复重点 -->
+    <button class="style-btn" data-style="doublestruck">𝔻 双线体 <span class="style-sample">𝔸𝟙𝟚</span><span class="digit-badge">数字✓</span></button>
+    <!-- 无衬线：有数字映射 -->
+    <button class="style-btn" data-style="sans">𝖲 无衬线 <span class="style-sample">𝖠𝟣𝟤</span><span class="digit-badge">数字✓</span></button>
+    <!-- 无衬线粗体：有数字映射 -->
+    <button class="style-btn" data-style="sansbold">𝗦 无衬线粗体 <span class="style-sample">𝗔𝟭𝟮</span><span class="digit-badge">数字✓</span></button>
+    <!-- 无衬线斜体：无数字映射 -->
+    <button class="style-btn" data-style="sansitalic">𝘚 无衬线斜体 <span class="style-sample">𝘈12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 无衬线粗斜体：无数字映射 -->
+    <button class="style-btn" data-style="sansbolditalic">𝙎 无衬线粗斜体 <span class="style-sample">𝘼12</span><span class="digit-badge" style="background:#f1f5f9;">数字⨯</span></button>
+    <!-- 等宽：有数字映射 -->
+    <button class="style-btn" data-style="monospace">𝚃 等宽 <span class="style-sample">𝙰𝟷𝟸</span><span class="digit-badge">数字✓</span></button>
+    <!-- 双线数字专用（仅数字转换，字母不变） -->
+    <button class="style-btn" data-style="doublestruckDigits">🔢 双线数字 <span class="style-sample">A𝟘𝟙𝟚</span><span class="digit-badge">仅数字✓</span></button>
+  </div>
+  
+  <div class="missing-warning" style="margin-top: 1rem;">
+    ⚠️ 手写体/哥特体/双线体大写字母特殊映射已修正。✅ <strong style="color:#b45309;">数字转换现已全面修复：双线体、粗体、无衬线、无衬线粗体、等宽、双线数字专用均生效</strong>。斜体/手写体等风格无数学数字，保留原数字。
+  </div>
+  <div class="footer-note">
+    🧮 Unicode 数学字母数字符号 · 映射遵循 U+1D400–U+1D7FF 以及 U+2100–U+214F · 数字风格：粗体(𝟎-𝟗)、双线(𝟘-𝟡)、无衬线(𝟢-𝟫)、无衬线粗体(𝟬-𝟵)、等宽(𝟶-𝟿)
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    // ---------- 终极修复：数字映射确保全部正确 ----------
+    const STYLES = {
+      // 粗体 —— 带数字
+      bold: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D400 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D41A + i)),
+        digit: [...Array(10)].map((_, i) => String.fromCodePoint(0x1D7CE + i)), // 𝟎-𝟗
+        name: '粗体'
+      },
+      // 斜体 —— 无数字
+      italic: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D434 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D44E + i)),
+        digit: null,
+        name: '斜体'
+      },
+      // 粗斜体 —— 无数字
+      bolditalic: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D468 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D482 + i)),
+        digit: null,
+        name: '粗斜体'
+      },
+      // 手写体 —— 无数字
+      script: {
+        upper: ['𝒜','ℬ','𝒞','𝒟','ℰ','ℱ','𝒢','ℋ','ℐ','𝒥','𝒦','ℒ','ℳ','𝒩','𝒪','𝒫','𝒬','ℛ','𝒮','𝒯','𝒰','𝒱','𝒲','𝒳','𝒴','𝒵'],
+        lower: ['𝒶','𝒷','𝒸','𝒹','ℯ','𝒻','ℊ','𝒽','𝒾','𝒿','𝓀','𝓁','𝓂','𝓃','𝓸','𝓅','𝓆','𝓇','𝓈','𝓉','𝓊','𝓋','𝓌','𝓍','𝓎','𝓏'],
+        digit: null,
+        name: '手写体'
+      },
+      // 手写粗体 —— 无数字
+      boldscript: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D4D0 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D4EA + i)),
+        digit: null,
+        name: '手写粗体'
+      },
+      // 哥特体 —— 无数字
+      fraktur: {
+        upper: ['𝔄','𝔅','ℭ','𝔇','𝔈','𝔉','𝔊','ℌ','ℑ','𝔍','𝔎','𝔏','𝔐','𝔑','𝔒','𝔓','𝔔','ℜ','𝔖','𝔗','𝔘','𝔙','𝔚','𝔛','𝔜','ℨ'],
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D51E + i)),
+        digit: null,
+        name: '哥特体'
+      },
+      // 哥特粗体 —— 无数字
+      boldfraktur: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D56C + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D586 + i)),
+        digit: null,
+        name: '哥特粗体'
+      },
+      // ★★★ 双线体 —— 已包含数字映射！之前遗漏，现在修复 ★★★
+      doublestruck: {
+        upper: ['𝔸','𝔹','ℂ','𝔻','𝔼','𝔽','𝔾','ℍ','𝕀','𝕁','𝕂','𝕃','𝕄','ℕ','𝕆','ℙ','ℚ','ℝ','𝕊','𝕋','𝕌','𝕍','𝕎','𝕏','𝕐','ℤ'],
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D552 + i)),
+        digit: [...Array(10)].map((_, i) => String.fromCodePoint(0x1D7D8 + i)), // 𝟘-𝟡 ✅ 关键修复
+        name: '双线体'
+      },
+      // 无衬线 —— 有数字
+      sans: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D5A0 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D5BA + i)),
+        digit: [...Array(10)].map((_, i) => String.fromCodePoint(0x1D7E2 + i)), // 𝟢-𝟫
+        name: '无衬线'
+      },
+      // 无衬线粗体 —— 有数字
+      sansbold: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D5D4 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D5EE + i)),
+        digit: [...Array(10)].map((_, i) => String.fromCodePoint(0x1D7EC + i)), // 𝟬-𝟵
+        name: '无衬线粗体'
+      },
+      // 无衬线斜体 —— 无数字
+      sansitalic: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D608 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D622 + i)),
+        digit: null,
+        name: '无衬线斜体'
+      },
+      // 无衬线粗斜体 —— 无数字
+      sansbolditalic: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D63C + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D656 + i)),
+        digit: null,
+        name: '无衬线粗斜体'
+      },
+      // 等宽 —— 有数字
+      monospace: {
+        upper: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D670 + i)),
+        lower: [...Array(26)].map((_, i) => String.fromCodePoint(0x1D68A + i)),
+        digit: [...Array(10)].map((_, i) => String.fromCodePoint(0x1D7F6 + i)), // 𝟶-𝟿
+        name: '等宽'
+      },
+      // 双线数字专用 —— 仅数字转换
+      doublestruckDigits: {
+        upper: null,
+        lower: null,
+        digit: [...Array(10)].map((_, i) => String.fromCodePoint(0x1D7D8 + i)), // 𝟘-𝟡
+        name: '双线数字'
+      }
+    };
+
+    // ---------- 状态管理 ----------
+    let currentStyle = 'bold';
+    const inputEl = document.getElementById('inputText');
+    const outputEl = document.getElementById('outputDisplay');
+    const currentStyleNameEl = document.getElementById('currentStyleName');
+    const inputCountEl = document.getElementById('inputCount');
+    const outputCountEl = document.getElementById('outputCount');
+    const styleBtns = document.querySelectorAll('.style-btn');
+    
+    // 转换函数 —— 数字映射现在会正确生效！
+    function convertText(text, styleKey) {
+      if (!text) return '';
+      const style = STYLES[styleKey];
+      if (!style) return text;
+      
+      const upperMap = style.upper || [];
+      const lowerMap = style.lower || [];
+      const digitMap = style.digit;  // 允许为null，但如果是数组就转换
+      
+      let result = '';
+      for (let ch of text) {
+        let code = ch.charCodeAt(0);
+        if (code >= 65 && code <= 90 && upperMap.length) {
+          result += upperMap[code - 65] || ch;
+        } else if (code >= 97 && code <= 122 && lowerMap.length) {
+          result += lowerMap[code - 97] || ch;
+        } else if (code >= 48 && code <= 57 && digitMap && digitMap.length) {
+          result += digitMap[code - 48];  // ✅ 数字转换终于正确！
+        } else {
+          result += ch;
+        }
+      }
+      return result;
+    }
+    
+    // 更新UI
+    function updateOutput() {
+      const input = inputEl.value;
+      const converted = convertText(input, currentStyle);
+      outputEl.textContent = converted;
+      inputCountEl.textContent = (input.length || 0) + ' 字符';
+      outputCountEl.textContent = (converted.length || 0) + ' 字符';
+      currentStyleNameEl.textContent = STYLES[currentStyle]?.name || currentStyle;
+    }
+    
+    // 设置活动样式
+    function setActiveStyle(styleKey) {
+      styleBtns.forEach(btn => {
+        if (btn.dataset.style === styleKey) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      currentStyle = styleKey;
+      updateOutput();
+    }
+    
+    // 事件绑定
+    inputEl.addEventListener('input', updateOutput);
+    
+    styleBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        setActiveStyle(this.dataset.style);
+      });
+    });
+    
+    // 清空输入
+    document.getElementById('clearInputBtn').addEventListener('click', function() {
+      inputEl.value = '';
+      updateOutput();
+    });
+    
+    // 复制输出
+    document.getElementById('copyOutputBtn').addEventListener('click', async function() {
+      const text = outputEl.textContent;
+      if (!text) {
+        document.getElementById('copyFeedback').textContent = '✗ 无内容';
+        setTimeout(() => document.getElementById('copyFeedback').textContent = '', 1500);
+        return;
+      }
+      await navigator.clipboard.writeText(text);
+      const feedback = document.getElementById('copyFeedback');
+      feedback.textContent = '✓ 已复制';
+      setTimeout(() => feedback.textContent = '', 2000);
+    });
+    
+    // 初始化：空输入，激活粗体（粗体有数字映射）
+    inputEl.value = '';
+    setActiveStyle('bold');
+  })();
+</script>
+
+</body>
+</html>
