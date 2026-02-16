@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌏觅理雀の页面</title>
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 样式与您提供的版本完全一致，未做任何修改 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f6f8fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 2rem 1.8rem;
+            transition: all 0.2s;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1e2a3a;
+            margin-bottom: 0.5rem;
+            border-bottom: 2px solid #eaeef2;
+            padding-bottom: 1rem;
+        }
+        h1 i {
+            color: #2d7a9c;
+            font-size: 2rem;
+        }
+        .repo-badge {
+            background: #e6edf3;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            color: #1f3a5f;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #cfddee;
+        }
+        .repo-badge i {
+            color: #3b6e9c;
+        }
+        /* README 卡片样式 */
+        .readme-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 1.2rem 1.5rem;
+            margin: 0 0 1.5rem 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .readme-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #eaeef2;
+            padding-bottom: 0.5rem;
+            color: #1e2a3a;
+        }
+        .readme-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #1e2a3a;
+        }
+        .readme-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .readme-content pre {
+            background: #f6f8fa;
+            border-radius: 8px;
+            padding: 0.8rem;
+            overflow-x: auto;
+            border: 1px solid #e9eef2;
+        }
+        .readme-content code {
+            background: #f0f2f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .readme-content blockquote {
+            border-left: 4px solid #d0d7de;
+            padding-left: 1rem;
+            color: #57606a;
+            margin: 1rem 0;
+        }
+        .readme-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        .readme-content th, .readme-content td {
+            border: 1px solid #d0d7de;
+            padding: 0.4rem 0.8rem;
+            text-align: left;
+        }
+        .readme-content th {
+            background: #f6f8fa;
+        }
+        .readme-error {
+            color: #b13e3e;
+            background: #fff2f0;
+            border-radius: 12px;
+            padding: 0.8rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-bar {
+            background: #f0f4f9;
+            border-radius: 60px;
+            padding: 0.4rem 1rem 0.4rem 1.5rem;
+            margin: 1rem 0 1.8rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 0.2rem;
+            border: 1px solid #dde5ed;
+        }
+        .breadcrumb {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.98rem;
+            color: #2c3e50;
+        }
+        .breadcrumb a {
+            color: #1f5f8e;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.3rem 0.6rem;
+            border-radius: 30px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+        .breadcrumb a:hover {
+            background: #dee8f2;
+            text-decoration: underline;
+        }
+        .breadcrumb i {
+            font-size: 0.75rem;
+            color: #7b8c9d;
+            margin: 0 4px;
+        }
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #4f6f8f;
+        }
+        .loading i {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            color: #2d7a9c;
+        }
+        .error-box {
+            background: #fff2f0;
+            border-left: 5px solid #c93e3e;
+            padding: 1.2rem 1.5rem;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            color: #572525;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .error-box i {
+            font-size: 2rem;
+            color: #b13e3e;
+        }
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+            margin-top: 0.5rem;
+        }
+        .file-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.01);
+            cursor: default;
+            word-break: break-word;
+            position: relative;
+        }
+        .file-item.clickable {
+            cursor: pointer;
+        }
+        .file-item.clickable:hover {
+            background: #f1f7fd;
+            border-color: #aac7e0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(30,60,90,0.1);
+        }
+        .file-icon {
+            font-size: 1.7rem;
+            min-width: 32px;
+            text-align: center;
+            color: #5b6f84;
+        }
+        .folder-icon {
+            color: #f1c40f;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.05));
+        }
+        .file-info {
+            flex: 1;
+            overflow: hidden;
+        }
+        .file-name {
+            font-weight: 550;
+            font-size: 1rem;
+            color: #1e293b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .file-meta {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 4px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .file-meta i {
+            font-size: 0.7rem;
+            color: #8a9cb0;
+        }
+        .size-badge {
+            background: #eaf0f6;
+            border-radius: 30px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .github-icon-link {
+            color: #1b2b3a;
+            font-size: 1.3rem;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            margin-left: auto;
+            padding: 0 4px;
+            line-height: 1;
+            text-decoration: none;
+        }
+        .github-icon-link:hover {
+            opacity: 1;
+            color: #000;
+        }
+        .footer-note {
+            margin-top: 2.5rem;
+            font-size: 0.85rem;
+            color: #6f7c8b;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer-note a {
+            color: #1f5f8e;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+        .api-warning {
+            background: #fef9e6;
+            border-radius: 40px;
+            padding: 0.2rem 1rem;
+            color: #856404;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-github {
+            background: #1b2b3a;
+            color: white;
+            padding: 0.45rem 1.3rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .btn-github:hover {
+            background: #0f1e2c;
+        }
+        .empty-folder {
+            background: #f8fafc;
+            border-radius: 40px;
+            padding: 2.5rem;
+            text-align: center;
+            color: #5d7184;
+            border: 2px dashed #b9cddf;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <h1>
+            <i class=""></i> 
+            觅理雀の页面
+        </h1>
+        
+        <!-- 动态显示仓库信息 (从配置读取) -->
+        <div class="repo-badge" id="repo-badge">
+            <i class="fab fa-github"></i>
+            <span id="repo-display">your-username/your-repo</span>
+        </div>
+
+        <!-- README 简介卡片 (自动读取) -->
+        <div id="readme-card" class="readme-card" style="display: none;">
+            <h2><i class="fas fa-book-open"></i> 仓库简介 · README</h2>
+            <div id="readme-content" class="readme-content"></div>
+        </div>
+
+        <!-- 面包屑导航区 -->
+        <div class="nav-bar" id="nav-bar">
+            <div class="breadcrumb" id="breadcrumb"></div>
+        </div>
+
+        <!-- 加载指示器 / 错误信息 / 文件列表 -->
+        <div id="content-area">
+            <div class="loading" id="loading-indicator">
+                <i class="fas fa-spinner fa-pulse"></i>
+                <p>加载文件列表中...</p>
+            </div>
+        </div>
+
+        <!-- 底部信息 + 链接 -->
+        <div class="footer-note">
+            <div class="api-warning">
+                <i class="fas fa-hourglass-half"></i>  API 限制: 60 次/小时 (公开仓库)
+            </div>
+            <a href="#" id="github-repo-link" target="_blank" class="btn-github">
+                <i class="fab fa-github"></i> 查看 GitHub 仓库
+            </a>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- 用户配置区域（已根据您的仓库修改）----------
+            const CONFIG = {
+                owner: 'Minitrue451',        // 你的 GitHub 用户名
+                repo: 'MNT451P',              // 你的仓库名
+                branch: 'main',                // 分支 (通常为 main 或 master)
+                defaultPath: ''                // 可选的起始路径
+            };
+            // --------------------------------------------------------
+
+            // 补全显示仓库名
+            document.getElementById('repo-display').innerText = `${CONFIG.owner}/${CONFIG.repo}`;
+            const repoLink = document.getElementById('github-repo-link');
+            repoLink.href = `https://github.com/${CONFIG.owner}/${CONFIG.repo}`;
+
+            // 全局变量
+            let currentPath = '';                // 当前路径 (原始字符串, 不带编码, 无首尾斜杠)
+            let fileListData = [];                // 缓存最后一次获取的列表
+            const contentDiv = document.getElementById('content-area');
+            const breadcrumbDiv = document.getElementById('breadcrumb');
+            const readmeCard = document.getElementById('readme-card');
+            const readmeContent = document.getElementById('readme-content');
+
+            // 初始化: 监听 hash 变化 + 页面加载
+            window.addEventListener('load', () => {
+                fetchReadme();
+                handleHashChange();
+                window.addEventListener('hashchange', handleHashChange);
+            });
+
+            // 获取并渲染 README (使用 GitHub HTML 片段)
+            async function fetchReadme() {
+                const { owner, repo } = CONFIG;
+                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/readme`;
+                try {
+                    const response = await fetch(apiUrl, {
+                        headers: {
+                            'Accept': 'application/vnd.github.html',
+                        }
+                    });
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            readmeCard.style.display = 'none';
+                        } else {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                        return;
+                    }
+                    const html = await response.text();
+                    if (html.trim()) {
+                        readmeContent.innerHTML = html;
+                        readmeCard.style.display = 'block';
+                    } else {
+                        readmeCard.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.warn('README 加载失败:', error);
+                    readmeContent.innerHTML = `<div class="readme-error"><i class="fas fa-exclamation-triangle"></i> README 加载失败，请稍后重试。</div>`;
+                    readmeCard.style.display = 'block';
+                }
+            }
+
+            // 解析 hash 中的路径 (格式: #/path/to/folder)
+            function getPathFromHash() {
+                let hash = window.location.hash;
+                if (!hash || hash === '#' || hash === '#/') {
+                    return CONFIG.defaultPath || '';
+                }
+                if (hash.startsWith('#/')) {
+                    const encodedPath = hash.substring(2);
+                    try {
+                        const parts = encodedPath.split('/').map(part => {
+                            try {
+                                return decodeURIComponent(part);
+                            } catch (e) {
+                                return part;
+                            }
+                        });
+                        return parts.join('/');
+                    } catch (e) {
+                        console.warn('解析 hash 失败，返回默认路径', e);
+                        return CONFIG.defaultPath || '';
+                    }
+                }
+                return CONFIG.defaultPath || '';
+            }
+
+            // 根据当前路径更新 hash (保证编码)
+            function updateHashFromPath(path) {
+                if (!path) {
+                    window.location.hash = '#/';
+                } else {
+                    const parts = path.split('/').map(part => encodeURIComponent(part));
+                    const encoded = parts.join('/');
+                    window.location.hash = '#/' + encoded;
+                }
+            }
+
+            // 处理 hash 变化的主逻辑
+            async function handleHashChange() {
+                const newPath = getPathFromHash();
+                if (newPath !== currentPath) {
+                    currentPath = newPath;
+                    await fetchAndRenderFiles(currentPath);
+                } else if (!fileListData.length && !newPath) {
+                    await fetchAndRenderFiles(currentPath);
+                } else {
+                    renderBreadcrumb(currentPath);
+                }
+            }
+
+            // 获取并渲染文件列表
+            async function fetchAndRenderFiles(path) {
+                showLoading(true);
+                try {
+                    const files = await fetchRepoContents(path);
+                    fileListData = files;
+                    renderFileList(files, path);
+                    renderBreadcrumb(path);
+                } catch (error) {
+                    renderError(error);
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            function showLoading(isLoading) {
+                if (isLoading) {
+                    contentDiv.innerHTML = ` 
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-pulse"></i>
+                            <p>加载文件列表中...</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // 调用 GitHub API 获取目录内容
+            async function fetchRepoContents(path) {
+                const { owner, repo, branch } = CONFIG;
+                let apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents`;
+                if (path) {
+                    apiUrl += `/${path}`;
+                }
+                apiUrl += `?ref=${branch}`;
+
+                const response = await fetch(apiUrl, {
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                    }
+                });
+
+                if (!response.ok) {
+                    let errorMsg = `GitHub API 错误 ${response.status}`;
+                    if (response.status === 404) {
+                        errorMsg = '路径不存在或仓库/分支错误。';
+                    } else if (response.status === 403) {
+                        errorMsg = 'API 速率限制已达 (60次/小时)。稍后再试，或添加令牌。';
+                    }
+                    throw new Error(errorMsg);
+                }
+
+                const data = await response.json();
+                if (!Array.isArray(data)) {
+                    throw new Error('当前路径不是一个文件夹，请修改起始路径。');
+                }
+                return data;
+            }
+
+            // 渲染文件列表 (网格)
+            function renderFileList(files, path) {
+                if (!files || files.length === 0) {
+                    contentDiv.innerHTML = `<div class="empty-folder"><i class="far fa-folder-open" style="font-size:2.5rem; margin-bottom:1rem; display:block;"></i>这个文件夹是空的</div>`;
+                    return;
+                }
+
+                const sorted = [...files].sort((a, b) => {
+                    if (a.type === 'dir' && b.type !== 'dir') return -1;
+                    if (a.type !== 'dir' && b.type === 'dir') return 1;
+                    return a.name.localeCompare(b.name);
+                });
+
+                let html = `<div class="file-grid">`;
+
+                if (path) {
+                    html += `
+                        <div class="file-item clickable" data-path="parent">
+                            <div class="file-icon folder-icon"><i class="fas fa-arrow-up"></i></div>
+                            <div class="file-info">
+                                <div class="file-name">..</div>
+                                <div class="file-meta">上级目录</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                sorted.forEach(item => {
+                    const isDir = item.type === 'dir';
+                    const icon = isDir ? '<i class="fas fa-folder folder-icon"></i>' : getFileIcon(item.name);
+                    const size = isDir ? '' : formatBytes(item.size);
+                    const metaHtml = isDir 
+                        ? '<span class="file-meta"><i class="far fa-folder"></i> 文件夹</span>' 
+                        : `<span class="file-meta"><i class="far fa-file"></i> <span class="size-badge">${size}</span></span>`;
+
+                    if (isDir) {
+                        html += `
+                            <div class="file-item clickable" data-path="${item.path}">
+                                <div class="file-icon folder-icon">${icon}</div>
+                                <div class="file-info">
+                                    <div class="file-name" title="${item.name}">${item.name}</div>
+                                    ${metaHtml}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        const encodedPath = item.path.split('/').map(encodeURIComponent).join('/');
+                        let pagesUrl = `https://${CONFIG.owner}.github.io/${CONFIG.repo}/${encodedPath}`;
+                        const githubUrl = item.html_url || `https://github.com/${CONFIG.owner}/${CONFIG.repo}/blob/${CONFIG.branch}/${item.path}`;
+
+                        // 判断是否为 Markdown 文件
+                        const isMarkdown = item.name.toLowerCase().endsWith('.md') || item.name.toLowerCase().endsWith('.markdown');
+                        if (isMarkdown) {
+                            // Markdown 文件：去掉最后的 .md 或 .markdown 扩展名（不区分大小写）
+                            pagesUrl = pagesUrl.replace(/\.(md|markdown)$/i, '');
+                        }
+
+                        html += `
+                            <div class="file-item clickable" data-pages-url="${pagesUrl}">
+                                <div class="file-icon">${icon}</div>
+                                <div class="file-info">
+                                    <div class="file-name" title="${item.name}">${item.name}</div>
+                                    ${metaHtml}
+                                </div>
+                                <a href="${githubUrl}" target="_blank" class="github-icon-link" title="在 GitHub 上查看" onclick="event.stopPropagation();">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        `;
+                    }
+                });
+
+                html += `</div>`;
+                contentDiv.innerHTML = html;
+
+                contentDiv.querySelectorAll('.file-item.clickable').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        const pathAttr = el.dataset.path;
+                        const pagesUrl = el.dataset.pagesUrl;
+                        if (pathAttr === 'parent') {
+                            goToParent();
+                        } else if (pathAttr) {
+                            goToFolder(pathAttr);
+                        } else if (pagesUrl) {
+                            window.open(pagesUrl, '_blank');
+                        }
+                    });
+                });
+            }
+
+            function goToParent() {
+                if (!currentPath) return;
+                const parts = currentPath.split('/');
+                parts.pop();
+                const parent = parts.join('/');
+                updateHashFromPath(parent);
+            }
+
+            function goToFolder(subPath) {
+                updateHashFromPath(subPath);
+            }
+
+            function getFileIcon(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                const iconMap = {
+                    pdf: '<i class="fas fa-file-pdf" style="color:#d44b4b;"></i>',
+                    jpg: '<i class="fas fa-file-image" style="color:#75a5b5;"></i>',
+                    jpeg: '<i class="fas fa-file-image" style="color:#75a5b5;"></i>',
+                    png: '<i class="fas fa-file-image" style="color:#75a5b5;"></i>',
+                    gif: '<i class="fas fa-file-image" style="color:#75a5b5;"></i>',
+                    svg: '<i class="fas fa-file-image" style="color:#75a5b5;"></i>',
+                    mp4: '<i class="fas fa-file-video" style="color:#c35f9b;"></i>',
+                    mov: '<i class="fas fa-file-video" style="color:#c35f9b;"></i>',
+                    mp3: '<i class="fas fa-file-audio" style="color:#b4874b;"></i>',
+                    zip: '<i class="fas fa-file-zipper" style="color:#b5a36b;"></i>',
+                    tar: '<i class="fas fa-file-zipper" style="color:#b5a36b;"></i>',
+                    gz: '<i class="fas fa-file-zipper" style="color:#b5a36b;"></i>',
+                    doc: '<i class="fas fa-file-word" style="color:#2f6ea2;"></i>',
+                    docx: '<i class="fas fa-file-word" style="color:#2f6ea2;"></i>',
+                    xls: '<i class="fas fa-file-excel" style="color:#208a5a;"></i>',
+                    xlsx: '<i class="fas fa-file-excel" style="color:#208a5a;"></i>',
+                    ppt: '<i class="fas fa-file-powerpoint" style="color:#cb4029;"></i>',
+                    pptx: '<i class="fas fa-file-powerpoint" style="color:#cb4029;"></i>',
+                    md: '<i class="fas fa-file-lines" style="color:#4f6f8f;"></i>',
+                    txt: '<i class="fas fa-file-lines" style="color:#6c757d;"></i>',
+                    js: '<i class="fab fa-js" style="color:#e8a44b;"></i>',
+                    py: '<i class="fab fa-python" style="color:#3e7bac;"></i>',
+                    html: '<i class="fab fa-html5" style="color:#dd4b25;"></i>',
+                    css: '<i class="fab fa-css3-alt" style="color:#2b98e0;"></i>',
+                    json: '<i class="fas fa-brackets-curly" style="color:#b5975c;"></i>',
+                };
+                return iconMap[ext] || '<i class="fas fa-file" style="color:#7f8c8d;"></i>';
+            }
+
+            function formatBytes(bytes) {
+                if (bytes === undefined) return '0 B';
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+
+            function renderBreadcrumb(path) {
+                let parts = path ? path.split('/') : [];
+                let html = `<a data-path="root"><i class="fas fa-home"></i> 根目录</a>`;
+                let cumulativePath = '';
+
+                parts.forEach((part, index) => {
+                    cumulativePath = cumulativePath ? cumulativePath + '/' + part : part;
+                    html += ` <i class="fas fa-chevron-right"></i> `;
+                    html += `<a data-path="${cumulativePath}">${part}</a>`;
+                });
+
+                breadcrumbDiv.innerHTML = html;
+
+                breadcrumbDiv.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetPath = link.dataset.path;
+                        if (targetPath === 'root') {
+                            updateHashFromPath('');
+                        } else {
+                            updateHashFromPath(targetPath);
+                        }
+                    });
+                });
+            }
+
+            function renderError(error) {
+                contentDiv.innerHTML = `
+                    <div class="error-box">
+                        <i class="fas fa-circle-exclamation"></i>
+                        <div style="flex:1">
+                            <strong>加载失败</strong><br>
+                            ${error.message || '未知错误。请检查配置或网络。'}
+                        </div>
+                        <button onclick="window.location.hash='#/'" style="background:#1b2b3a; color:white; border:none; border-radius:40px; padding:0.5rem 1.2rem; cursor:pointer;">返回根目录</button>
+                    </div>
+                `;
+                renderBreadcrumb(currentPath);
+            }
+
+            window.goToRoot = function() {
+                updateHashFromPath('');
+            };
+
+        })();
+    </script>
+    <!-- 注：若想提高API限额，可以在 fetch 头中添加 Authorization: token YOUR_TOKEN -->
+    <!-- 重要提示：Markdown 文件需要添加 Front Matter (---) 并确保仓库根目录有 _config.yml 才能正常渲染 HTML 版本 -->
+</body>
+</html>
